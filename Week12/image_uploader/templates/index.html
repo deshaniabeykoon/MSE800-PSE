@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Loader with Flask</title>
+</head>
+<body>
+    <h1>Flask Image Loading and Uploading</h1>
+
+    <!-- Static Image with Change Button -->
+    <h2>Pre-loaded Example Image</h2>
+    <img id="loadedImage" src="{{ url_for('static', filename='images/example.jpg') }}" alt="Example Image" width="400">
+    <br>
+    <button onclick="cycleImages()">Cycle Example Images</button>
+
+    {% if uploaded_filename %}
+        <button onclick="showUploadedImage()">Show Uploaded Image</button>
+    {% endif %}
+
+    <hr>
+
+    <!-- Upload Image Form -->
+    <h2>Upload Your Own Image</h2>
+    <form method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <input type="submit" value="Upload Image">
+    </form>
+
+    {% if uploaded_filename %}
+        <p>Uploaded Image:
+            <a href="{{ url_for('static', filename='uploads/' + uploaded_filename) }}" target="_blank">
+                {{ uploaded_filename }}
+            </a>
+        </p>
+    {% endif %}
+
+    <!-- JS Scripts -->
+    <script>
+        // List of example images
+        const imageList = [
+            "{{ url_for('static', filename='images/example.jpg') }}",
+            "{{ url_for('static', filename='images/example2.jpg') }}",
+            "{{ url_for('static', filename='images/example3.jpg') }}"
+        ];
+
+        let currentIndex = 0;
+
+        function cycleImages() {
+            currentIndex = (currentIndex + 1) % imageList.length;
+            document.getElementById("loadedImage").src = imageList[currentIndex];
+        }
+
+        </script>
+        {% if uploaded_filename %}
+        <script>
+            function showUploadedImage() {
+                const uploadedImageURL = "{{ url_for('static', filename='uploads/' + uploaded_filename) }}";
+                document.getElementById("loadedImage").src = uploadedImageURL;
+            }
+        </script>
+        {% endif %}
+    </script>
+</body>
+</html>
